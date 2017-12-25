@@ -206,7 +206,8 @@ dependencies:
   - jupyter-client==5.0.0
   - jupyter-console==5.1.0
   - jupyter-core==4.3.0
-  - keras==2.0.2
+  - keras==2.1.2
+  - keras-rl==0.4.0
   - opencv-python==3.2.0.6
   - pa==0.0.23.dev0
   - prompt-toolkit==1.0.13
@@ -221,5 +222,5 @@ dependencies:
   - tqdm==4.11.2
   - udacity==1.1.1
   - udacity-pa==0.2.6
-prefix: /home/adwaith/anaconda2/envs/aind-dl
+prefix: /home/adwaith/anaconda2/envs/mastishk
 
