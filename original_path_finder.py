@@ -15,7 +15,7 @@ Q = np.matrix(np.zeros([6,6]))
 gamma = 0.8
 
 # Initial state. (Usually to be chosen at random)
-initial_state = 1
+initial_state = 0
 
 # This function returns all available actions in the state given as an argument
 def available_actions(state):
@@ -73,7 +73,7 @@ print(Q/np.max(Q)*100)
 # Goal state = 5
 # Best sequence path starting from 2 -> 2, 3, 1, 5
 
-current_state = 2
+current_state = 0
 steps = [current_state]
 
 while current_state != 5:
