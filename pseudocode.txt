@@ -1,5 +1,0 @@
-1. Create a FLOW-3D environment and register it in gym
-2. Load the environment and use either Q-Learning or Deep Q-Learning to update Q-table
-3. Use keras-rl library to converge to the final Q-table
-4. Test the learned model on a new simulation
-
