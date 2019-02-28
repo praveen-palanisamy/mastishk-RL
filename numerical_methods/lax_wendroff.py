@@ -14,15 +14,16 @@ The periodic boundary conditions are applied either end of the domain.
 The velocity is v=1. The solution is iterated until t=1.5 seconds.
 """
 
-
+import csv
 import numpy as np
 import math
 import matplotlib.pyplot as plt
+import random
 
 
 class LaxWendroff:
     
-    def __init__(self, N, dt):
+    def __init__(self, N, dt, decay_trigger_time=0):
         self.N = N # number of nodes
         self.tmax = 10
         self.xmin = 0
@@ -30,6 +31,7 @@ class LaxWendroff:
         self.dt = dt # timestep
         self.v = 1 # velocity
         self.xc = 0.25
+        self.decay_trigger_time=decay_trigger_time
         self.initializeDomain()
         self.initializeU()
         self.initializeParams()
@@ -72,8 +74,8 @@ class LaxWendroff:
             uexact = np.exp(-200*(self.x-self.xc-self.v*tc)**2)
             #error=self.MSE(uexact, self.u)
             error=self.max_error(uexact, self.u)
-            print(error, self.dt)
-                        
+            #print(tc, error, self.dt)
+            """            
             plt.plot(self.x, uexact, 'r', label="Exact solution")
             plt.plot(self.x, self.u, 'bo-', label="Lax-Wendroff")
             plt.axis((self.xmin-0.12, self.xmax+0.12, -0.2, 1.4))
@@ -83,11 +85,13 @@ class LaxWendroff:
             plt.legend(loc=1, fontsize=12)
             plt.suptitle("Time = %1.3f" % (tc+self.dt))
             plt.pause(0.01)
+            """
             tc += self.dt
-            if tc>4 and self.dt>0.0085:
-            	self.dt-=0.00000001
+            if tc>self.decay_trigger_time:
+            	self.dt-=1e-8
             if error>0.11:
-                break    	
+                break 
+        return (self.dt, self.decay_trigger_time, tc)   	
             
     def MSE(self, pred, obs):
         diff=sum(pred-obs)
@@ -99,9 +103,14 @@ class LaxWendroff:
 
 
 def main():
-    sim = LaxWendroff(1000, 0.009)
-    sim.solve_and_plot()
-    plt.show()
+    with open('final_times.csv','w') as out:
+        csv_out=csv.writer(out)
+        csv_out.writerow(['time step','decay trigger time', 'final time'])
+        for trial in range(1000):
+            sim = LaxWendroff(1000, random.uniform(0.0085,0.0095) , random.uniform(0,10))
+            csv_out.writerow(sim.solve_and_plot())
+            print("Finished trial number ", trial+1)
+    #plt.show()
     
     
 if __name__ == "__main__":
