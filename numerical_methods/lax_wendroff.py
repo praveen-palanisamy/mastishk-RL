@@ -16,17 +16,18 @@ The velocity is v=1. The solution is iterated until t=1.5 seconds.
 
 
 import numpy as np
+import math
 import matplotlib.pyplot as plt
 
 
 class LaxWendroff:
     
-    def __init__(self, N, tmax):
+    def __init__(self, N, dt):
         self.N = N # number of nodes
-        self.tmax = tmax
+        self.tmax = 10
         self.xmin = 0
-        self.xmax = 1
-        self.dt = 0.009 # timestep
+        self.xmax = 10
+        self.dt = dt # timestep
         self.v = 1 # velocity
         self.xc = 0.25
         self.initializeDomain()
@@ -53,9 +54,10 @@ class LaxWendroff:
     def solve_and_plot(self):
         tc = 0
         
-        for i in range(self.nsteps):
+        #for i in range(self.nsteps):
+        while tc<self.tmax:    
             plt.clf()
-            
+            error=0
             # The Lax-Wendroff scheme, Eq. (18.20)
             for j in range(self.N+2):
                 self.unp1[j] = self.u[j] + (self.v**2*self.dt**2/(2*self.dx**2))*(self.u[j+1]-2*self.u[j]+self.u[j-1]) \
@@ -68,7 +70,10 @@ class LaxWendroff:
             self.u[self.N+2] = self.u[1]
             
             uexact = np.exp(-200*(self.x-self.xc-self.v*tc)**2)
-            
+            #error=self.MSE(uexact, self.u)
+            error=self.max_error(uexact, self.u)
+            print(error, self.dt)
+                        
             plt.plot(self.x, uexact, 'r', label="Exact solution")
             plt.plot(self.x, self.u, 'bo-', label="Lax-Wendroff")
             plt.axis((self.xmin-0.12, self.xmax+0.12, -0.2, 1.4))
@@ -79,10 +84,22 @@ class LaxWendroff:
             plt.suptitle("Time = %1.3f" % (tc+self.dt))
             plt.pause(0.01)
             tc += self.dt
+            if tc>4 and self.dt>0.0085:
+            	self.dt-=0.00000001
+            if error>0.11:
+                break    	
+            
+    def MSE(self, pred, obs):
+        diff=sum(pred-obs)
+        return math.sqrt(diff*diff)	  
+        
+    def max_error(Self, pred, obs):
+    	diff=abs(pred-obs)
+    	return max(diff)              
 
 
 def main():
-    sim = LaxWendroff(100, 1.5)
+    sim = LaxWendroff(1000, 0.009)
     sim.solve_and_plot()
     plt.show()
     
