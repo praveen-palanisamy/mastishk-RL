@@ -1,5 +1,6 @@
 #!/usr/bin/env python 
 import gym 
+import gym_advection
 import random 
 import torch 
 from torch.autograd import Variable 
@@ -7,7 +8,7 @@ import numpy as np
 from utils.decay_schedule import LinearDecaySchedule 
 from function_approximator.perceptron import SLP
 
-env = gym.make("CartPole-v0")
+env = gym.make("Advection-AdG-v0")
 MAX_NUM_EPISODES = 100000
 MAX_STEPS_PER_EPISODE = 300
 class Shallow_Q_Learner(object):
