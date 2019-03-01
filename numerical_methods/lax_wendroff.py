@@ -88,10 +88,10 @@ class LaxWendroff:
             plt.pause(0.01)
             """
             tc += self.dt
-            #if tc>self.decay_trigger_time:
-            	#self.dt-=1e-8
-            if random.uniform(0,1)>0.5:
-            	self.dt-=1e-8	
+            if tc>self.decay_trigger_time:
+            	self.dt-=1e-8
+            #if random.uniform(0,1)>0.5:
+            	#self.dt-=1e-8	
             if error>0.11:
                 break 
         return (self.dt, self.decay_trigger_time, tc)   	
@@ -109,7 +109,7 @@ def main():
     trials=100
     bar = progressbar.ProgressBar(maxval=trials, widgets=[progressbar.Bar('=', '[', ']'), ' ', progressbar.Percentage()])
     bar.start()
-    with open('final_times_random_decay.csv','w') as out:
+    with open('final_times_no_decay.csv','w') as out:
         csv_out=csv.writer(out)
         csv_out.writerow(['time step','decay trigger time', 'final time'])
         for trial in range(trials):
