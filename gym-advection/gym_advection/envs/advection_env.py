@@ -22,8 +22,7 @@ class AdvectionEnv(gym.Env):
             x----> space
             d represents a partial derivative, for example du/dt means partial derivative of velocity w.r.t time
         
-        The propagation is defined as a Gaussian wave in this case:
-            U(x,t) = exp(-200*(x-xc-v*t).^2)
+        The propagation is defined as a Gaussian wave in this case.
             
         There are many numerical schemes to solve the advection equation for the value of u. But all suffer with numerical errors. The task of the agent is to maintain the numerical solution (Lax-Wendroff) as close as possible (error<0.11) to the exact known solution for the longest time possible (normalized max time) by adjusting the time step (del_t) in the numerical scheme.
 
