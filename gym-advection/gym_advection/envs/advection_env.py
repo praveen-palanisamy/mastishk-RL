@@ -10,7 +10,7 @@ from gym import spaces, logger
 from gym.utils import seeding
 import numpy as np
 
-class CartPoleEnv(gym.Env):
+class AdvectionEnv(gym.Env):
     """
     Description:
         A pole is attached by an un-actuated joint to a cart, which moves along a frictionless track. The pendulum starts upright, and the goal is to prevent it from falling over by increasing and reducing the cart's velocity.

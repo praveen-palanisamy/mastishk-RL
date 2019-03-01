@@ -5,6 +5,7 @@
 from datetime import datetime
 from argparse import ArgumentParser
 import gym
+import gym_advection
 import torch
 import random
 import numpy as np
