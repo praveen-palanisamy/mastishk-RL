@@ -18,6 +18,7 @@ import csv
 import numpy as np
 import math
 import matplotlib.pyplot as plt
+import progressbar
 import random
 
 
@@ -87,8 +88,10 @@ class LaxWendroff:
             plt.pause(0.01)
             """
             tc += self.dt
-            if tc>self.decay_trigger_time:
-            	self.dt-=1e-8
+            #if tc>self.decay_trigger_time:
+            	#self.dt-=1e-8
+            if random.uniform(0,1)>0.5:
+            	self.dt-=1e-8	
             if error>0.11:
                 break 
         return (self.dt, self.decay_trigger_time, tc)   	
@@ -103,13 +106,18 @@ class LaxWendroff:
 
 
 def main():
-    with open('final_times.csv','w') as out:
+    trials=100
+    bar = progressbar.ProgressBar(maxval=trials, widgets=[progressbar.Bar('=', '[', ']'), ' ', progressbar.Percentage()])
+    bar.start()
+    with open('final_times_random_decay.csv','w') as out:
         csv_out=csv.writer(out)
         csv_out.writerow(['time step','decay trigger time', 'final time'])
-        for trial in range(1000):
-            sim = LaxWendroff(1000, random.uniform(0.0085,0.0095) , random.uniform(0,10))
+        for trial in range(trials):
+            sim = LaxWendroff(1000, random.uniform(0.0088, 0.0092), random.uniform(0,10))
             csv_out.writerow(sim.solve_and_plot())
-            print("Finished trial number ", trial+1)
+            bar.update(trial+1)
+            #print("Finished trial number ", trial+1)
+    bar.finish()        
     #plt.show()
     
     
