@@ -61,7 +61,9 @@ class AdvectionEnv(gym.Env):
     def __init__(self):
         self.__version__ = "0.0.1"
         # Modify the observation space, low, high and shape values according to your custom environment's needs
-        self.observation_space = gym.spaces.Box(low=0.0, high=1.0, shape=(2,)) #high=?
+        low=np.array([0.0,0.0])
+        high=np.array([0.11, 1.0])
+        self.observation_space = gym.spaces.Box(low, high, dtype=np.float64) 
         # Modify the action space, and dimension according to your custom environment's needs
         self.action_space = gym.spaces.Discrete(2)
 
@@ -102,3 +104,8 @@ class AdvectionEnv(gym.Env):
         :return:
         """
         return
+'''        
+env=AdvectionEnv()
+print(env.observation_space.low)
+print(env.action_space)
+'''
