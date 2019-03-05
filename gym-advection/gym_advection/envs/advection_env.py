@@ -95,7 +95,7 @@ class AdvectionEnv(gym.Env):
         new_error, norm_time=self.lax_wendroff(del_t)	   
         self.state=np.array([error, del_t])	 
  
-        done = bool(new_error>0.11 or norm_time>0.95)
+        done = bool(new_error<0.11 and norm_time>0.95)
        
         
         reward=None
