@@ -103,7 +103,8 @@ class AdvectionEnv(gym.Env):
             pass
         if action==1:
             self.dt-=1e-8
-        new_error=self.lax_wendroff()	   
+        new_error=self.lax_wendroff()	
+        print(old_error, new_error)   
         self.state=np.array([new_error, self.dt])	 
  
         done = bool(new_error<0.11 and self.tc/self.tmax>0.95)
@@ -130,7 +131,7 @@ class AdvectionEnv(gym.Env):
 
         # Implement your reset method here
         # return observation
-        self.dt=random.uniform(.009, .0091)
+        self.dt=random.uniform(0.0088, 0.009)
         self.initializeParams()
         self.state = [float("inf"), self.dt]
         self.tc=0.0
@@ -147,6 +148,7 @@ class AdvectionEnv(gym.Env):
     def lax_wendroff(self):
         
         for j in range(self.N+2):
+            self.initializeParams()
             self.unp1[j] = self.u[j] + (self.v**2*self.dt**2/(2*self.dx**2))*(self.u[j+1]-2*self.u[j]+self.u[j-1]) - self.alpha*(self.u[j+1]-self.u[j-1])
                 
         self.u = self.unp1.copy()
@@ -171,12 +173,12 @@ class AdvectionEnv(gym.Env):
         self.unp1 = u0.copy()        
         
     def initializeParams(self):
-        self.nsteps = round(self.tmax/self.dt)
         self.alpha = self.v*self.dt/(2*self.dx)              
-       
+      
 env=AdvectionEnv()
 print(env.observation_space.low)
 print(env.action_space)
 print(env.reset())
-for i in range(10):
+for i in range(100):
     print(env.step(1))
+   
