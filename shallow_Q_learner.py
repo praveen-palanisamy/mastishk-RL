@@ -18,7 +18,7 @@ class Shallow_Q_Learner(object):
 		self.gamma = gamma # Agent's discount factor
 		self.learning_rate = learning_rate # Agent's Q-learning rate
 		# self.Q is the Action-Value function. This agent represents Q using a Neural Network.
-		self.Q = SLP(state_shape, action_shape, device=torch.device("cpu"))
+		self.Q = SLP(state_shape, action_shape, 10, device=torch.device("cpu"))
 		self.Q_optimizer = torch.optim.Adam(self.Q.parameters(), lr=1e-3)
 		# self.policy is the policy followed by the agent. This agents follows
 		# an epsilon-greedy policy w.r.t it's Q estimate.
