@@ -34,7 +34,7 @@ class AdvectionEnv(gym.Env):
         Type: Box(2)
         Num	Observation                 Min         Max
         0   Error                       0.0         0.11 
-        1   Current time step (del_t)   0.0         1.00 
+        1   Current time step (del_t)   0.0         0.10 
         
     Actions:
         Type: Discrete(2)
@@ -63,7 +63,7 @@ class AdvectionEnv(gym.Env):
         self.__version__ = "0.0.1"
         # Modify the observation space, low, high and shape values according to your custom environment's needs
         low=np.array([0.0,0.0])
-        high=np.array([0.11, 1.0])
+        high=np.array([0.11, 0.10])
         self.observation_space = gym.spaces.Box(low, high, dtype=np.float64) 
         # Modify the action space, and dimension according to your custom environment's needs
         self.action_space = gym.spaces.Discrete(2)
@@ -75,10 +75,7 @@ class AdvectionEnv(gym.Env):
         self.xmin = 0
         self.xmax = 10
         self.v = 1 # velocity
-        self.xc = 0.25
-        self.initializeDomain()
-        self.initializeU()
-        
+        self.xc = 0.25        
 
     def step(self, action):
         """
@@ -99,14 +96,13 @@ class AdvectionEnv(gym.Env):
         assert self.action_space.contains(action), "%r (%s) invalid"%(action, type(action))
         state = self.state
         old_error, self.dt = state
-        if action==0:
-            pass
+        #print("Old state=", self.state)  
         if action==1:
             self.dt-=1e-8
         new_error=self.lax_wendroff()	
-        print(old_error, new_error)   
+        #print(old_error, new_error)   
         self.state=np.array([new_error, self.dt])	 
- 
+        #print("New state=", self.state)
         done = bool(new_error<0.11 and self.tc/self.tmax>0.95)
        
         
@@ -131,8 +127,10 @@ class AdvectionEnv(gym.Env):
 
         # Implement your reset method here
         # return observation
-        self.dt=random.uniform(0.0088, 0.009)
-        self.initializeParams()
+        self.dt=random.uniform(0.0088, 0.01)
+        self.initializeDomain()
+        self.initializeU()
+        #self.initializeParams()
         self.state = [float("inf"), self.dt]
         self.tc=0.0
         return np.array(self.state)
@@ -158,6 +156,9 @@ class AdvectionEnv(gym.Env):
         self.u[self.N+2] = self.u[1]
             
         uexact = np.exp(-200*(self.x-self.xc-self.v*self.tc)**2)
+        #print(self.xc)
+        
+        #print(*zip(uexact, self.u))
         error=max(abs(uexact-self.u))
         #error=self.max_error(uexact, self.u)
         self.tc+=self.dt
@@ -174,11 +175,12 @@ class AdvectionEnv(gym.Env):
         
     def initializeParams(self):
         self.alpha = self.v*self.dt/(2*self.dx)              
-      
+
+     
 env=AdvectionEnv()
 print(env.observation_space.low)
 print(env.action_space)
 print(env.reset())
-for i in range(100):
+for i in range(10):
     print(env.step(1))
-   
+

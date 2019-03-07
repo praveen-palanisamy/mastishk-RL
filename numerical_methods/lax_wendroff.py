@@ -100,7 +100,7 @@ class LaxWendroff:
         diff=sum(pred-obs)
         return math.sqrt(diff*diff)	  
         
-    def max_error(Self, pred, obs):
+    def max_error(self, pred, obs):
     	diff=abs(pred-obs)
     	return max(diff)              
 
