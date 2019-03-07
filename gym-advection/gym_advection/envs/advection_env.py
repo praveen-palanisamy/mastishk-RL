@@ -66,7 +66,7 @@ class AdvectionEnv(gym.Env):
         high=np.array([0.11, 0.10])
         self.observation_space = gym.spaces.Box(low, high, dtype=np.float64) 
         # Modify the action space, and dimension according to your custom environment's needs
-        self.action_space = gym.spaces.Discrete(2)
+        self.action_space = gym.spaces.Discrete(3)
         
         self.state=None
         
@@ -97,11 +97,13 @@ class AdvectionEnv(gym.Env):
         state = self.state
         old_error, self.dt = state
         if action==1:
-            self.dt-=1e-8
+        	self.dt+=0.00005
+        if action==2:
+            self.dt-=0.00005
         new_error=self.lax_wendroff()	
         #print(old_error, new_error)   
         self.state=np.array([new_error, self.dt])	 
-        success = bool(new_error<0.11 and (self.tc/self.tmax)>0.95)
+        success = bool(new_error<0.11 and (self.tc/self.tmax)>0.98)
         reward=None
         if not success:
             reward=1.0 if new_error<=old_error else -1.0
@@ -123,8 +125,8 @@ class AdvectionEnv(gym.Env):
 
         # Implement your reset method here
         # return observation
-        self.dt=random.uniform(0.001, 0.01)
-        #self.dt=0.009
+        #self.dt=random.uniform(0.0088, 0.0092)
+        self.dt=0.009
         self.initializeDomain()
         self.initializeU()
         #self.initializeParams()

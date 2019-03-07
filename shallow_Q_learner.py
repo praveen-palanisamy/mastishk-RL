@@ -9,7 +9,7 @@ from utils.decay_schedule import LinearDecaySchedule
 from function_approximator.perceptron import SLP
 
 env = gym.make("Advection-AdG-v0")
-MAX_NUM_EPISODES = 100
+MAX_NUM_EPISODES = 1000
 MAX_STEPS_PER_EPISODE = 1500
 class Shallow_Q_Learner(object):
 	def __init__(self, state_shape, action_shape, learning_rate=0.005, gamma=0.98):
@@ -63,7 +63,7 @@ if __name__ == "__main__":
 			# env.render()
 			action = agent.get_action(obs)
 			next_obs, reward, done, info = env.step(action)
-			if next_obs[0]>0.11 or env.tc/env.tmax>0.95:
+			if next_obs[0]>0.11:
 				break
 			agent.learn(obs, action, reward, next_obs)
 			obs = next_obs
