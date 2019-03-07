@@ -96,23 +96,19 @@ class AdvectionEnv(gym.Env):
         assert self.action_space.contains(action), "%r (%s) invalid"%(action, type(action))
         state = self.state
         old_error, self.dt = state
-        #print("Old state=", self.state)  
         if action==1:
             self.dt-=1e-8
         new_error=self.lax_wendroff()	
         #print(old_error, new_error)   
         self.state=np.array([new_error, self.dt])	 
-        #print("New state=", self.state)
-        done = bool(new_error<0.11 and self.tc/self.tmax>0.95)
-       
-        
+        success = bool(new_error<0.11 and (self.tc/self.tmax)>0.95)
         reward=None
-        if not done:
+        if not success:
             reward=1.0 if new_error<=old_error else -1.0
         else:
             reward=100.0
        
-        return self.state, reward, done, {}
+        return self.state, reward, success, {}
 
     
     def reset(self):
@@ -127,7 +123,8 @@ class AdvectionEnv(gym.Env):
 
         # Implement your reset method here
         # return observation
-        self.dt=random.uniform(0.0088, 0.01)
+        self.dt=random.uniform(0.001, 0.01)
+        #self.dt=0.009
         self.initializeDomain()
         self.initializeU()
         #self.initializeParams()
@@ -176,11 +173,11 @@ class AdvectionEnv(gym.Env):
     def initializeParams(self):
         self.alpha = self.v*self.dt/(2*self.dx)              
 
-     
+'''     
 env=AdvectionEnv()
 print(env.observation_space.low)
 print(env.action_space)
 print(env.reset())
 for i in range(10):
     print(env.step(1))
-
+'''

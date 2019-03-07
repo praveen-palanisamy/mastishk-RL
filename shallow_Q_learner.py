@@ -9,8 +9,8 @@ from utils.decay_schedule import LinearDecaySchedule
 from function_approximator.perceptron import SLP
 
 env = gym.make("Advection-AdG-v0")
-MAX_NUM_EPISODES = 5
-MAX_STEPS_PER_EPISODE = 10
+MAX_NUM_EPISODES = 100
+MAX_STEPS_PER_EPISODE = 1500
 class Shallow_Q_Learner(object):
 	def __init__(self, state_shape, action_shape, learning_rate=0.005, gamma=0.98):
 		self.state_shape = state_shape
@@ -55,22 +55,20 @@ if __name__ == "__main__":
 	first_episode = True
 	episode_rewards = list()
 	for episode in range(MAX_NUM_EPISODES):
-		print("Episode=",episode)
+		
 		obs = env.reset()
 		cum_reward = 0.0 # Cumulative reward
 		step=0
-		final_dt=None
-		final_error=None
 		for step in range(MAX_STEPS_PER_EPISODE):
 			# env.render()
 			action = agent.get_action(obs)
-			#print(step)
 			next_obs, reward, done, info = env.step(action)
+			if next_obs[0]>0.11 or env.tc/env.tmax>0.95:
+				break
 			agent.learn(obs, action, reward, next_obs)
 			obs = next_obs
 			cum_reward += reward
-			final_dt, final_error=next_obs[1], next_obs[0]
-			print(next_obs)
+            
 			if done is True:
 				if first_episode: # Initialize max_reward at the end of first episode
 					max_reward = cum_reward
@@ -80,7 +78,7 @@ if __name__ == "__main__":
 					max_reward = cum_reward
 				print("\nEpisode#{} ended in {} steps. reward ={} ;	mean_reward={} best_reward={}".format(episode, step+1, cum_reward,np.mean(episode_rewards), max_reward))
 				break
-		#print(final_dt, final_error, cum_reward, step)
+		print("Episode={0}, reward={1}, normalized time={2}, steps={3}".format(episode, cum_reward, env.tc/env.tmax, step))
 	env.close()			
 				
 				
