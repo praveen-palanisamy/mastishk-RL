@@ -1,4 +1,5 @@
-#!/usr/bin/env python 
+#!/usr/bin/env python
+import csv 
 import gym 
 import gym_advection
 import random 
@@ -7,9 +8,10 @@ from torch.autograd import Variable
 import numpy as np 
 from utils.decay_schedule import LinearDecaySchedule 
 from function_approximator.perceptron import SLP
+import sys
 
 env = gym.make("Advection-AdG-v0")
-MAX_NUM_EPISODES = 1000
+MAX_NUM_EPISODES = 100
 MAX_STEPS_PER_EPISODE = 1500
 class Shallow_Q_Learner(object):
 	def __init__(self, state_shape, action_shape, learning_rate=0.005, gamma=0.98):
@@ -54,6 +56,9 @@ if __name__ == "__main__":
 	agent = Shallow_Q_Learner(observation_shape, action_shape)
 	first_episode = True
 	episode_rewards = list()
+	csv_file=open(sys.argv[1], 'w')
+	writer=csv.writer(csv_file, delimiter=',')
+	writer.writerow(['episode', 'reward', 'normalized time', 'steps'])
 	for episode in range(MAX_NUM_EPISODES):
 		
 		obs = env.reset()
@@ -79,6 +84,8 @@ if __name__ == "__main__":
 				print("\nEpisode#{} ended in {} steps. reward ={} ;	mean_reward={} best_reward={}".format(episode, step+1, cum_reward,np.mean(episode_rewards), max_reward))
 				break
 		print("Episode={0}, reward={1}, normalized time={2}, steps={3}".format(episode, cum_reward, env.tc/env.tmax, step))
+		writer.writerow([episode, cum_reward, env.tc/env.tmax, step])
+		
 	env.close()			
 				
 				
