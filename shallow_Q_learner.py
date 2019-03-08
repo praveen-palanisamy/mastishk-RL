@@ -12,7 +12,7 @@ import progressbar
 import sys
 
 env = gym.make("Advection-AdG-v0")
-MAX_NUM_EPISODES = 5
+MAX_NUM_EPISODES = 100
 MAX_STEPS_PER_EPISODE = 1500
 class Shallow_Q_Learner(object):
 	def __init__(self, state_shape, action_shape, neurons=10, learning_rate=0.005, gamma=0.98):

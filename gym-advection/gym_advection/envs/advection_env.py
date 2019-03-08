@@ -37,10 +37,11 @@ class AdvectionEnv(gym.Env):
         1   Current time step (del_t)   0.0         0.10 
         
     Actions:
-        Type: Discrete(2)
+        Type: Discrete(3)
         Num	Action
         0	Do not change del_t
-        1	Reduce del_t by 1e-8
+        1	Increase del_t by 0.00005
+        3   Reduce del_t by 0.00005
         
     Reward:
         +1 if the error decreases (or stays the same) at any point
