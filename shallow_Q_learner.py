@@ -8,6 +8,7 @@ from torch.autograd import Variable
 import numpy as np 
 from utils.decay_schedule import LinearDecaySchedule 
 from function_approximator.perceptron import SLP
+import progressbar
 import sys
 
 env = gym.make("Advection-AdG-v0")
@@ -59,6 +60,8 @@ if __name__ == "__main__":
 	csv_file=open(sys.argv[1], 'w')
 	writer=csv.writer(csv_file, delimiter=',')
 	writer.writerow(['episode', 'reward', 'normalized time', 'steps'])
+	bar = progressbar.ProgressBar(maxval=MAX_NUM_EPISODES, widgets=[progressbar.Bar('=', '[', ']'), ' ', progressbar.Percentage()])
+	bar.start()
 	for episode in range(MAX_NUM_EPISODES):
 		
 		obs = env.reset()
@@ -81,10 +84,12 @@ if __name__ == "__main__":
 				episode_rewards.append(cum_reward)
 				if cum_reward > max_reward:
 					max_reward = cum_reward
-				print("\nEpisode#{} ended in {} steps. reward ={} ;	mean_reward={} best_reward={}".format(episode, step+1, cum_reward,np.mean(episode_rewards), max_reward))
+				#print("\nEpisode#{} ended in {} steps. reward ={} ;	mean_reward={} best_reward={}".format(episode, step+1, cum_reward,np.mean(episode_rewards), max_reward))
 				break
-		print("Episode={0}, reward={1}, normalized time={2}, steps={3}".format(episode, cum_reward, env.tc/env.tmax, step))
+		#print("Episode={0}, reward={1}, normalized time={2}, steps={3}".format(episode, cum_reward, env.tc/env.tmax, step))
 		writer.writerow([episode, cum_reward, env.tc/env.tmax, step])
+		bar.update(episode+1)
+	bar.finish()	
 		
 	env.close()			
 				
