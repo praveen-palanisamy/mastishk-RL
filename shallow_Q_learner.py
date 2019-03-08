@@ -12,16 +12,17 @@ import progressbar
 import sys
 
 env = gym.make("Advection-AdG-v0")
-MAX_NUM_EPISODES = 100
+MAX_NUM_EPISODES = 5
 MAX_STEPS_PER_EPISODE = 1500
 class Shallow_Q_Learner(object):
-	def __init__(self, state_shape, action_shape, learning_rate=0.005, gamma=0.98):
+	def __init__(self, state_shape, action_shape, neurons=10, learning_rate=0.005, gamma=0.98):
 		self.state_shape = state_shape
 		self.action_shape = action_shape
 		self.gamma = gamma # Agent's discount factor
 		self.learning_rate = learning_rate # Agent's Q-learning rate
 		# self.Q is the Action-Value function. This agent represents Q using a Neural Network.
-		self.Q = SLP(state_shape, action_shape, 10, device=torch.device("cpu"))
+		self.neurons=int(neurons)
+		self.Q = SLP(state_shape, action_shape, self.neurons, device=torch.device("cpu"))
 		self.Q_optimizer = torch.optim.Adam(self.Q.parameters(), lr=1e-3)
 		# self.policy is the policy followed by the agent. This agents follows
 		# an epsilon-greedy policy w.r.t it's Q estimate.
@@ -54,10 +55,11 @@ class Shallow_Q_Learner(object):
 if __name__ == "__main__":
 	observation_shape = env.observation_space.shape
 	action_shape = env.action_space.n
-	agent = Shallow_Q_Learner(observation_shape, action_shape)
+	agent = Shallow_Q_Learner(observation_shape, action_shape, sys.argv[1])
 	first_episode = True
 	episode_rewards = list()
-	csv_file=open(sys.argv[1], 'w')
+	
+	csv_file=open("trained_models/advection_AdG_v0_"+str(MAX_NUM_EPISODES)+"_"+str(agent.neurons)+".csv", 'x')
 	writer=csv.writer(csv_file, delimiter=',')
 	writer.writerow(['episode', 'reward', 'normalized time', 'steps'])
 	bar = progressbar.ProgressBar(maxval=MAX_NUM_EPISODES, widgets=[progressbar.Bar('=', '[', ']'), ' ', progressbar.Percentage()])
