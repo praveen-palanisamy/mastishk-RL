@@ -75,7 +75,7 @@ class LaxWendroff:
             uexact = np.exp(-200*(self.x-self.xc-self.v*tc)**2)
             #error=self.MSE(uexact, self.u)
             error=self.max_error(uexact, self.u)
-            #print(tc, error, self.dt)
+            print(tc, error, self.dt)
             """            
             plt.plot(self.x, uexact, 'r', label="Exact solution")
             plt.plot(self.x, self.u, 'bo-', label="Lax-Wendroff")
@@ -106,14 +106,15 @@ class LaxWendroff:
 
 
 def main():
-    trials=100
+    trials=1
     bar = progressbar.ProgressBar(maxval=trials, widgets=[progressbar.Bar('=', '[', ']'), ' ', progressbar.Percentage()])
     bar.start()
     with open('final_times_no_decay.csv','w') as out:
         csv_out=csv.writer(out)
         csv_out.writerow(['time step','decay trigger time', 'final time'])
         for trial in range(trials):
-            sim = LaxWendroff(1000, random.uniform(0.0088, 0.0092), random.uniform(0,10))
+            #sim = LaxWendroff(1000, random.uniform(0.0088, 0.0092), random.uniform(0,10))
+            sim = LaxWendroff(1000, 0.009, 10)
             csv_out.writerow(sim.solve_and_plot())
             bar.update(trial+1)
             #print("Finished trial number ", trial+1)

@@ -12,7 +12,7 @@ import progressbar
 import sys
 
 env = gym.make("Advection-AdG-v0")
-MAX_NUM_EPISODES = 100
+MAX_NUM_EPISODES = int(sys.argv[1])
 MAX_STEPS_PER_EPISODE = 1500
 class Shallow_Q_Learner(object):
 	def __init__(self, state_shape, action_shape, neurons=10, learning_rate=0.005, gamma=0.98):
@@ -55,11 +55,11 @@ class Shallow_Q_Learner(object):
 if __name__ == "__main__":
 	observation_shape = env.observation_space.shape
 	action_shape = env.action_space.n
-	agent = Shallow_Q_Learner(observation_shape, action_shape, sys.argv[1])
+	agent = Shallow_Q_Learner(observation_shape, action_shape, sys.argv[2])
 	first_episode = True
 	episode_rewards = list()
 	
-	csv_file=open("trained_models/advection_AdG_v0_"+str(MAX_NUM_EPISODES)+"_"+str(agent.neurons)+".csv", 'x')
+	csv_file=open("trained_models/advection_AdG_v0_"+str(MAX_NUM_EPISODES)+"_"+str(agent.neurons)+".csv", 'w')
 	writer=csv.writer(csv_file, delimiter=',')
 	writer.writerow(['episode', 'reward', 'normalized time', 'steps'])
 	bar = progressbar.ProgressBar(maxval=MAX_NUM_EPISODES, widgets=[progressbar.Bar('=', '[', ']'), ' ', progressbar.Percentage()])
@@ -76,9 +76,8 @@ if __name__ == "__main__":
 			if next_obs[0]>0.11:
 				break
 			agent.learn(obs, action, reward, next_obs)
-			obs = next_obs
 			cum_reward += reward
-            
+			obs = next_obs
 			if done is True:
 				if first_episode: # Initialize max_reward at the end of first episode
 					max_reward = cum_reward

@@ -34,14 +34,14 @@ class AdvectionEnv(gym.Env):
         Type: Box(2)
         Num	Observation                 Min         Max
         0   Error                       0.0         0.11 
-        1   Current time step (del_t)   0.0         0.10 
+        1   Current time step (del_t)   -inf         inf
         
     Actions:
-        Type: Discrete(3)
+        Type: Discrete(2)
         Num	Action
-        0	Do not change del_t
+        0   Do not change del_t
         1	Increase del_t by 0.00005
-        3   Reduce del_t by 0.00005
+        2   Reduce del_t by 0.00005
         
     Reward:
         +1 if the error decreases (or stays the same) at any point
@@ -104,7 +104,7 @@ class AdvectionEnv(gym.Env):
         new_error=self.lax_wendroff()	
         #print(old_error, new_error)   
         self.state=np.array([new_error, self.dt])	 
-        success = bool(new_error<0.11 and (self.tc/self.tmax)>0.98)
+        success = bool(new_error<0.11 and (self.tc/self.tmax)>0.96)
         reward=None
         if not success:
             reward=1.0 if new_error<=old_error else -1.0
@@ -156,11 +156,7 @@ class AdvectionEnv(gym.Env):
         self.u[self.N+2] = self.u[1]
             
         uexact = np.exp(-200*(self.x-self.xc-self.v*self.tc)**2)
-        #print(self.xc)
-        
-        #print(*zip(uexact, self.u))
         error=max(abs(uexact-self.u))
-        #error=self.max_error(uexact, self.u)
         self.tc+=self.dt
         return error
         
@@ -176,11 +172,11 @@ class AdvectionEnv(gym.Env):
     def initializeParams(self):
         self.alpha = self.v*self.dt/(2*self.dx)              
 
-'''     
+'''   
 env=AdvectionEnv()
-print(env.observation_space.low)
+#print(env.observation_space.low)
 print(env.action_space)
 print(env.reset())
 for i in range(10):
-    print(env.step(1))
+    print(env.step(0))
 '''
