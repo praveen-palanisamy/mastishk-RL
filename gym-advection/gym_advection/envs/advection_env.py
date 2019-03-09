@@ -37,7 +37,7 @@ class AdvectionEnv(gym.Env):
         1   Current time step (del_t)   -inf         inf
         
     Actions:
-        Type: Discrete(2)
+        Type: Discrete(3)
         Num	Action
         0   Do not change del_t
         1	Increase del_t by 0.00005
@@ -46,7 +46,7 @@ class AdvectionEnv(gym.Env):
     Reward:
         +1 if the error decreases (or stays the same) at any point
         -1 if the error increases at any point
-        +100 if the normalized max time > 0.95 is attained
+        +100 if the normalized max time > 0.96 is attained
 
     Starting State:
         All observations are assigned a uniform random value as follows:

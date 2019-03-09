@@ -61,7 +61,7 @@ class LaxWendroff:
         while tc<self.tmax:    
             plt.clf()
             error=0
-            # The Lax-Wendroff scheme, Eq. (18.20)
+            # The Lax-Wendroff scheme
             for j in range(self.N+2):
                 self.unp1[j] = self.u[j] + (self.v**2*self.dt**2/(2*self.dx**2))*(self.u[j+1]-2*self.u[j]+self.u[j-1]) \
                 - self.alpha*(self.u[j+1]-self.u[j-1])
