@@ -1,1 +1,2 @@
 from gym_advection.envs.advection_env import AdvectionEnv
+from gym_advection.envs.advection_env_continuous import AdvectionEnvContinuous
