@@ -104,7 +104,7 @@ class AdvectionEnv(gym.Env):
         new_error=self.lax_wendroff()	
         #print(old_error, new_error)   
         self.state=np.array([new_error, self.dt])	 
-        success = bool(new_error<0.11 and (self.tc/self.tmax)>0.96)
+        success = bool(new_error<0.11 and (self.tc/self.tmax)>=1.00)
         reward=None
         if not success:
             reward=1.0 if new_error<=old_error else -1.0

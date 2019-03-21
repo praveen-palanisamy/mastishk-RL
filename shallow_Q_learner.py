@@ -96,7 +96,7 @@ if __name__ == "__main__":
 					max_reward = cum_reward
 				#print("\nEpisode#{} ended in {} steps. reward ={} ;	mean_reward={} best_reward={}".format(episode, step+1, cum_reward,np.mean(episode_rewards), max_reward))
 				break
-		print("Episode={0}, reward={1}, normalized time={2}, steps={3}".format(episode, cum_reward, env.tc/env.tmax, step))
+		#print("Episode={0}, reward={1}, normalized time={2}, steps={3}".format(episode, cum_reward, env.tc/env.tmax, step))
 		agent_writer.writerow([episode, cum_reward, env.tc/env.tmax, step])
 		bar.update(episode+1)
 		#episodes[episode]=list(map(list, zip(*episodes[episode])))
