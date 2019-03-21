@@ -37,10 +37,13 @@ class Shallow_Q_Learner(object):
 		
 	def epsilon_greedy_Q(self, observation):
 		# Decay Epsilion/exploratin as per schedule
+		
 		if random.random() < self.epsilon_decay(self.step_num):
 			action = random.choice([i for i in range(self.action_shape)])			
 		else:
 			action = np.argmax(self.Q(observation).data.numpy())
+		
+		#action = np.argmax(self.Q(observation).data.numpy())
 		return action
 		
 	def learn(self, s, a, r, s_next):
@@ -59,20 +62,26 @@ if __name__ == "__main__":
 	first_episode = True
 	episode_rewards = list()
 	
-	csv_file=open("trained_models/advection_AdG_v0_"+str(MAX_NUM_EPISODES)+"_"+str(agent.neurons)+".csv", 'w')
-	writer=csv.writer(csv_file, delimiter=',')
-	writer.writerow(['episode', 'reward', 'normalized time', 'steps'])
+	agent_file=open("trained_models/advection_AdG_v0_"+str(MAX_NUM_EPISODES)+"_"+str(agent.neurons)+".csv", 'w')
+	agent_writer=csv.writer(agent_file, delimiter=',')
+	agent_writer.writerow(['episode', 'reward', 'normalized time', 'steps'])
 	bar = progressbar.ProgressBar(maxval=MAX_NUM_EPISODES, widgets=[progressbar.Bar('=', '[', ']'), ' ', progressbar.Percentage()])
 	bar.start()
+	#episodes=dict()
 	for episode in range(MAX_NUM_EPISODES):
-		
+		#episodes[episode]=list()
 		obs = env.reset()
 		cum_reward = 0.0 # Cumulative reward
 		step=0
+		episode_file=open("trained_models/analysis/"+str(episode)+".csv", 'w')
+		episode_writer=csv.writer(episode_file, delimiter=',')
+		episode_writer.writerow(['dt', 'error'])
 		for step in range(MAX_STEPS_PER_EPISODE):
 			# env.render()
 			action = agent.get_action(obs)
 			next_obs, reward, done, info = env.step(action)
+			episode_writer.writerow(info)
+			#episodes[episode].append(info)
 			if next_obs[0]>0.11:
 				break
 			agent.learn(obs, action, reward, next_obs)
@@ -88,10 +97,11 @@ if __name__ == "__main__":
 				#print("\nEpisode#{} ended in {} steps. reward ={} ;	mean_reward={} best_reward={}".format(episode, step+1, cum_reward,np.mean(episode_rewards), max_reward))
 				break
 		print("Episode={0}, reward={1}, normalized time={2}, steps={3}".format(episode, cum_reward, env.tc/env.tmax, step))
-		writer.writerow([episode, cum_reward, env.tc/env.tmax, step])
+		agent_writer.writerow([episode, cum_reward, env.tc/env.tmax, step])
 		bar.update(episode+1)
-	bar.finish()	
-		
+		#episodes[episode]=list(map(list, zip(*episodes[episode])))
+	#print(episodes)
+	bar.finish()
 	env.close()			
 				
 				

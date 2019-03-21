@@ -111,7 +111,7 @@ class AdvectionEnv(gym.Env):
         else:
             reward=100.0
        
-        return self.state, reward, success, {}
+        return self.state, reward, success, [self.dt/0.009, new_error/0.11]
 
     
     def reset(self):
