@@ -34,7 +34,8 @@ class AdvectionEnv(gym.Env):
         Type: Box(2)
         Num	Observation                 Min         Max
         0   Error                       0.0         0.11 
-        1   Current time step (del_t)   -inf         inf
+        1   Current time step (del_t)   0.0         inf
+        2   Normalized simulation time  0.0         1.00
         
     Actions:
         Type: Discrete(3)
@@ -63,8 +64,8 @@ class AdvectionEnv(gym.Env):
     def __init__(self):
         self.__version__ = "0.0.1"
         # Modify the observation space, low, high and shape values according to your custom environment's needs
-        low=np.array([0.0,0.0])
-        high=np.array([0.11, 0.10])
+        low=np.array([0.0,0.0,0.0])
+        high=np.array([0.11, float("inf"), 1.0])
         self.observation_space = gym.spaces.Box(low, high, dtype=np.float64) 
         # Modify the action space, and dimension according to your custom environment's needs
         self.action_space = gym.spaces.Discrete(3)
@@ -96,14 +97,14 @@ class AdvectionEnv(gym.Env):
         # return (observation, reward, done, info)
         assert self.action_space.contains(action), "%r (%s) invalid"%(action, type(action))
         state = self.state
-        old_error, self.dt = state
+        old_error, self.dt, _ = state
         if action==1:
         	self.dt+=0.00005
         if action==2:
             self.dt-=0.00005
         new_error=self.lax_wendroff()	
         #print(old_error, new_error)   
-        self.state=np.array([new_error, self.dt])	
+        self.state=np.array([new_error, self.dt, self.tc/self.tmax])	
          
         done = bool(new_error>0.11)
         reward=None
@@ -133,8 +134,8 @@ class AdvectionEnv(gym.Env):
         self.initializeDomain()
         self.initializeU()
         #self.initializeParams()
-        self.state = [float("inf"), self.dt]
         self.tc=0.0
+        self.state = [float("inf"), self.dt, self.tc/self.tmax]
         return np.array(self.state)
 
     def render(self, mode='human', close=False):

@@ -27,8 +27,8 @@ class Shallow_Q_Learner(object):
 		# self.policy is the policy followed by the agent. This agents follows
 		# an epsilon-greedy policy w.r.t it's Q estimate.
 		self.policy = self.epsilon_greedy_Q
-		self.epsilon_max = 1.0
-		self.epsilon_min = 0.05
+		self.epsilon_max = 0.25
+		self.epsilon_min = 0.025
 		self.epsilon_decay=LinearDecaySchedule(initial_value=self.epsilon_max, final_value=self.epsilon_min, max_steps= 0.5 * MAX_NUM_EPISODES	* MAX_STEPS_PER_EPISODE)
 		self.step_num = 0
 		
