@@ -37,8 +37,8 @@ class Shallow_Q_Learner(object):
 		
 	def epsilon_greedy_Q(self, observation):
 		# Decay Epsilion/exploratin as per schedule
-		if random.random() < 0.05:
-		#if random.random() < self.epsilon_decay(self.step_num):
+		#if random.random() < 0.05:
+		if random.random() < self.epsilon_decay(self.step_num):
 			action = random.choice([i for i in range(self.action_shape)])	#Exploration		
 		else:
 			action = np.argmax(self.Q(observation).data.numpy())   #Exploitation
