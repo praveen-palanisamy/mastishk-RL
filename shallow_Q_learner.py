@@ -105,7 +105,7 @@ if __name__ == "__main__":
 				break
 			'''	
 		episode_rewards.append(cum_reward)
-		print("Episode={0}, reward={1}, normalized time={2}, steps={3}, Average Reward={4}, Exploration threshold={5}".format(episode, cum_reward, env.tc/env.tmax, step, np.mean(episode_rewards), agent.greedy_threshold))
+		print("Episode={0}, reward={1}, normalized time={2}, steps={3}, Average Reward={4}, Exploration threshold={5}".format(episode+1, cum_reward, env.tc/env.tmax, step, np.mean(episode_rewards), agent.greedy_threshold))
 		agent_writer.writerow([episode, cum_reward, env.tc/env.tmax, step, np.mean(episode_rewards)])
 		bar.update(episode+1)
 

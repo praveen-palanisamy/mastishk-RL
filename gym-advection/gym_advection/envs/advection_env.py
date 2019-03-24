@@ -106,7 +106,7 @@ class AdvectionEnv(gym.Env):
         #print(old_error, new_error)   
         self.state=np.array([new_error, self.dt, self.tc/self.tmax])	
          
-        done = bool(new_error>0.11)
+        done = bool(new_error>1.0)
         reward=None
         if not done:
             #reward=self.dt/0.009 if new_error<=0.11 else -self.dt/0.009

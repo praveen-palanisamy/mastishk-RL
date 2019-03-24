@@ -76,7 +76,7 @@ class LaxWendroff:
             #error=self.MSE(uexact, self.u)
             error=self.max_error(uexact, self.u)
             print(tc, error, self.dt)
-            """            
+                       
             plt.plot(self.x, uexact, 'r', label="Exact solution")
             plt.plot(self.x, self.u, 'bo-', label="Lax-Wendroff")
             plt.axis((self.xmin-0.12, self.xmax+0.12, -0.2, 1.4))
@@ -86,7 +86,7 @@ class LaxWendroff:
             plt.legend(loc=1, fontsize=12)
             plt.suptitle("Time = %1.3f" % (tc+self.dt))
             plt.pause(0.01)
-            """
+            
             tc += self.dt
             if tc>self.decay_trigger_time:
             	self.dt-=1e-8
