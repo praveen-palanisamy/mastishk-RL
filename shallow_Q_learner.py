@@ -29,7 +29,7 @@ class Shallow_Q_Learner(object):
 		self.policy = self.epsilon_greedy_Q
 		self.epsilon_max = 1.0
 		self.epsilon_min = 0.05
-		self.epsilon_decay=LinearDecaySchedule(initial_value=self.epsilon_max, final_value=self.epsilon_min, max_steps= 0.5 * MAX_NUM_EPISODES	* MAX_STEPS_PER_EPISODE/2.0)
+		self.epsilon_decay=LinearDecaySchedule(initial_value=self.epsilon_max, final_value=self.epsilon_min, max_steps= 0.5 * MAX_NUM_EPISODES	* MAX_STEPS_PER_EPISODE)
 		self.step_num = 0
 		
 	def get_action(self, observation):
