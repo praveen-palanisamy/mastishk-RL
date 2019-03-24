@@ -25,7 +25,7 @@ class AdvectionEnv(gym.Env):
         
         The propagation is defined as a Gaussian wave in this case.
             
-        There are many numerical schemes to solve the advection equation for the value of u. But all suffer with numerical errors. The task of the agent is to maintain the numerical solution (Lax-Wendroff) as close as possible (error<0.10) to the exact known solution for the longest time possible (normalized max time) by adjusting the time step (del_t) in the numerical scheme.
+        There are many numerical schemes to solve the advection equation for the value of u. But all suffer with numerical errors. The task of the agent is to maintain the numerical solution (Lax-Wendroff) as close as possible (error<0.11) to the exact known solution for the longest time possible (normalized max time) by adjusting the time step (del_t) in the numerical scheme.
 
     Source:
         This problem is designed by Adwaith Gupta, 2019
@@ -106,7 +106,7 @@ class AdvectionEnv(gym.Env):
         #print(old_error, new_error)   
         self.state=np.array([new_error, self.dt, self.tc/self.tmax])	
          
-        done = bool(new_error>0.1)
+        done = bool(new_error>0.11)
         reward=None
         if not done:
             #reward=self.dt/0.009 if new_error<=0.11 else -self.dt/0.009
