@@ -13,7 +13,7 @@ import sys
 
 env = gym.make("Advection-AdG-v0")
 MAX_NUM_EPISODES = int(sys.argv[1])
-MAX_STEPS_PER_EPISODE = 1500
+MAX_STEPS_PER_EPISODE = 1200
 class Shallow_Q_Learner(object):
 	def __init__(self, state_shape, action_shape, neurons=10, learning_rate=0.005, gamma=0.98):
 		self.state_shape = state_shape
@@ -27,8 +27,8 @@ class Shallow_Q_Learner(object):
 		# self.policy is the policy followed by the agent. This agents follows
 		# an epsilon-greedy policy w.r.t it's Q estimate.
 		self.policy = self.epsilon_greedy_Q
-		self.epsilon_max = 0.25
-		self.epsilon_min = 0.025
+		self.epsilon_max = 1.0
+		self.epsilon_min = 0.05
 		self.epsilon_decay=LinearDecaySchedule(initial_value=self.epsilon_max, final_value=self.epsilon_min, max_steps= 0.5 * MAX_NUM_EPISODES	* MAX_STEPS_PER_EPISODE)
 		self.step_num = 0
 		
@@ -38,6 +38,7 @@ class Shallow_Q_Learner(object):
 	def epsilon_greedy_Q(self, observation):
 		# Decay Epsilion/exploratin as per schedule
 		#if random.random() < 0.05:
+		#print(self.epsilon_decay(self.step_num))
 		if random.random() < self.epsilon_decay(self.step_num):
 			action = random.choice([i for i in range(self.action_shape)])	#Exploration		
 		else:
@@ -78,6 +79,7 @@ if __name__ == "__main__":
 		episode_writer.writerow(['dt', 'error'])
 		for step in range(MAX_STEPS_PER_EPISODE):		
 			# env.render()
+			agent.step_num+=1
 			action = agent.get_action(obs)
 			next_obs, reward, done, info = env.step(action)
 			episode_writer.writerow(info)
