@@ -8,6 +8,7 @@ from torch.autograd import Variable
 import numpy as np 
 from utils.decay_schedule import LinearDecaySchedule 
 from function_approximator.perceptron import SLP
+import os
 import progressbar
 import sys
 
@@ -63,8 +64,9 @@ if __name__ == "__main__":
 	agent = Shallow_Q_Learner(observation_shape, action_shape, sys.argv[2])
 	first_episode = True
 	episode_rewards = list()
-	
-	agent_file=open("trained_models/advection_AdG_v0_"+str(MAX_NUM_EPISODES)+"_"+str(agent.neurons)+".csv", 'w')
+	path="trained_models/advection_AdG_v0_"+str(MAX_NUM_EPISODES)+"_"+str(agent.neurons)+"/"
+	os.mkdir(path)
+	agent_file=open(path+"training.csv", 'w')
 	agent_writer=csv.writer(agent_file, delimiter=',')
 	agent_writer.writerow(['episode', 'reward', 'normalized time', 'steps'])
 	bar = progressbar.ProgressBar(maxval=MAX_NUM_EPISODES, widgets=[progressbar.Bar('=', '[', ']'), ' ', progressbar.Percentage()])
@@ -75,7 +77,7 @@ if __name__ == "__main__":
 		obs = env.reset()
 		cum_reward = 0.0 # Cumulative reward
 		step=0
-		episode_file=open("trained_models/analysis/"+str(episode)+".csv", 'w')
+		episode_file=open(path+str(episode)+".csv", 'w')
 		episode_writer=csv.writer(episode_file, delimiter=',')
 		episode_writer.writerow(['dt', 'error'])
 		for step in range(MAX_STEPS_PER_EPISODE):		
