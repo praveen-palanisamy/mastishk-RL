@@ -27,17 +27,17 @@ class Shallow_Q_Learner(object):
 		# self.policy is the policy followed by the agent. This agents follows
 		# an epsilon-greedy policy w.r.t it's Q estimate.
 		self.policy = self.epsilon_greedy_Q
-		#self.epsilon_max = 1.0
-		#self.epsilon_min = 0.05
-		#self.epsilon_decay=LinearDecaySchedule(initial_value=self.epsilon_max, final_value=self.epsilon_min, max_steps= 0.5 * MAX_NUM_EPISODES	* MAX_STEPS_PER_EPISODE)
-		#self.step_num = 0
+		self.epsilon_max = 1.0
+		self.epsilon_min = 0.05
+		self.epsilon_decay=LinearDecaySchedule(initial_value=self.epsilon_max, final_value=self.epsilon_min, max_steps= 0.5 * MAX_NUM_EPISODES	* MAX_STEPS_PER_EPISODE)
+		self.step_num = 0
 		
 	def get_action(self, observation):
 		return self.policy(observation)
 		
 	def epsilon_greedy_Q(self, observation):
 		# Decay Epsilion/exploratin as per schedule
-		if random.random() < 0.1:
+		if random.random() < 0.05:
 		#if random.random() < self.epsilon_decay(self.step_num):
 			action = random.choice([i for i in range(self.action_shape)])	#Exploration		
 		else:
@@ -62,7 +62,7 @@ if __name__ == "__main__":
 	first_episode = True
 	episode_rewards = list()
 	
-	agent_file=open("trained_models/advection_AdG_v0_"+str(MAX_NUM_EPISODES)+"_"+str(agent.neurons)+".csv", 'w')
+	agent_file=open("trained_models/advection_AdG_v0_no_decay_"+str(MAX_NUM_EPISODES)+"_"+str(agent.neurons)+".csv", 'w')
 	agent_writer=csv.writer(agent_file, delimiter=',')
 	agent_writer.writerow(['episode', 'reward', 'normalized time', 'steps'])
 	bar = progressbar.ProgressBar(maxval=MAX_NUM_EPISODES, widgets=[progressbar.Bar('=', '[', ']'), ' ', progressbar.Percentage()])
@@ -86,7 +86,8 @@ if __name__ == "__main__":
 			agent.learn(obs, action, reward, next_obs)
 			cum_reward += reward
 			obs = next_obs
-			if next_obs[0]>0.11 or done:
+			#if next_obs[0]>0.11 or done:
+			if env.tc/env.tmax>=1.0 or done:
 				break			
 			
 			'''
