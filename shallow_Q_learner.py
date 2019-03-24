@@ -29,7 +29,7 @@ class Shallow_Q_Learner(object):
 		self.policy = self.epsilon_greedy_Q
 		self.epsilon_max = 1.0
 		self.epsilon_min = 0.05
-		self.epsilon_decay=LinearDecaySchedule(initial_value=self.epsilon_max, final_value=self.epsilon_min, max_steps= 0.5 * MAX_NUM_EPISODES	* MAX_STEPS_PER_EPISODE)
+		self.epsilon_decay=LinearDecaySchedule(initial_value=self.epsilon_max, final_value=self.epsilon_min, max_steps= 0.5 * MAX_NUM_EPISODES	* MAX_STEPS_PER_EPISODE/2.0)
 		self.step_num = 0
 		
 	def get_action(self, observation):
@@ -39,7 +39,8 @@ class Shallow_Q_Learner(object):
 		# Decay Epsilion/exploratin as per schedule
 		#if random.random() < 0.05:
 		#print(self.epsilon_decay(self.step_num))
-		if random.random() < self.epsilon_decay(self.step_num):
+		self.greedy_threshold=self.epsilon_decay(self.step_num)
+		if random.random() < self.greedy_threshold:
 			action = random.choice([i for i in range(self.action_shape)])	#Exploration		
 		else:
 			action = np.argmax(self.Q(observation).data.numpy())   #Exploitation
@@ -63,7 +64,7 @@ if __name__ == "__main__":
 	first_episode = True
 	episode_rewards = list()
 	
-	agent_file=open("trained_models/advection_AdG_v0_no_decay_"+str(MAX_NUM_EPISODES)+"_"+str(agent.neurons)+".csv", 'w')
+	agent_file=open("trained_models/advection_AdG_v0_"+str(MAX_NUM_EPISODES)+"_"+str(agent.neurons)+".csv", 'w')
 	agent_writer=csv.writer(agent_file, delimiter=',')
 	agent_writer.writerow(['episode', 'reward', 'normalized time', 'steps'])
 	bar = progressbar.ProgressBar(maxval=MAX_NUM_EPISODES, widgets=[progressbar.Bar('=', '[', ']'), ' ', progressbar.Percentage()])
@@ -104,11 +105,10 @@ if __name__ == "__main__":
 				break
 			'''	
 		episode_rewards.append(cum_reward)
-		print("Episode={0}, reward={1}, normalized time={2}, steps={3}, Average Reward={4}".format(episode, cum_reward, env.tc/env.tmax, step, np.mean(episode_rewards)))
+		print("Episode={0}, reward={1}, normalized time={2}, steps={3}, Average Reward={4}, Exploration threshold={5}".format(episode, cum_reward, env.tc/env.tmax, step, np.mean(episode_rewards), agent.greedy_threshold))
 		agent_writer.writerow([episode, cum_reward, env.tc/env.tmax, step, np.mean(episode_rewards)])
 		bar.update(episode+1)
-		#episodes[episode]=list(map(list, zip(*episodes[episode])))
-	#print(episodes)
+
 	bar.finish()
 	env.close()			
 				
